@@ -2,7 +2,7 @@
 <html lang="en" data-bs-theme="light">
 
 <head>
-    <title>Aethera Delights</title>
+    <title>Aethera Pastries</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="assets/img/Group13.svg">
@@ -11,60 +11,60 @@
 
     <style>
         :root {
-            --espresso: #3b2a20;
-            --cream: #faf3e7;
-            --butter: #fffbf3;
-            --wheat: #ebd9bc;
-            --caramel: #c98a4b;
-            --berry: #a23b4b;
+            --espresso: #4B3327;
+            --caramel: #C98B45;
+            --wheat: #E8C49A;
+            --cream: #FFF9EF;
+            --peach: #F5DCC0;
+            --berry: #B5364A;
+            --muted: #6B5444;
         }
 
         body {
-            background: var(--cream);
             color: var(--espresso);
             font-family: Georgia, "Times New Roman", serif;
+            background: url("assets/img/bg.svg") center / cover fixed, var(--peach);
         }
 
-        .menu-title {
-            background: var(--espresso);
+        /* Header and footer */
+        .brown-bar {
+            background: linear-gradient(135deg, var(--espresso), #6b4a38);
             color: var(--cream);
-            border-bottom: 4px solid var(--caramel);
+            border-bottom: 3px solid var(--caramel);
         }
 
-        .tagline {
-            color: var(--wheat);
-        }
-
-        .search-input {
-            background: var(--butter);
+        /* Search box and filter buttons */
+        .cream {
+            background: var(--cream);
             color: var(--espresso);
             border: 1px solid var(--wheat);
         }
 
-        .filter-btn {
-            background: var(--butter);
+        .btn.cream:hover {
+            background: var(--peach);
             color: var(--espresso);
-            border: 1px solid var(--wheat);
+            border-color: var(--caramel);
         }
 
-        .filter-btn:hover {
-            background: var(--wheat);
-        }
-
-        .filter-btn.active {
+        .btn.cream.active {
             background: var(--espresso);
             color: var(--cream);
             border-color: var(--espresso);
         }
 
-        .product-card {
-            background: var(--butter);
-            border: 0;
-            border-bottom: 3px solid var(--caramel);
+        .form-control.cream:focus {
+            background: var(--cream);
+            color: var(--espresso);
+            border-color: var(--caramel);
+            box-shadow: 0 0 0 .25rem rgba(201, 139, 69, .25);
         }
 
-        .pic {
-            background: var(--wheat);
+        /* Product cards */
+        .product-card {
+            background: var(--cream);
+            color: var(--espresso);
+            border: 0;
+            border-bottom: 3px solid var(--caramel);
         }
 
         .price {
@@ -89,9 +89,9 @@
 
         .tag-bestseller {
             background: #07268c;
-            color: #ffff;
         }
 
+        /* Keep card text aligned */
         .name,
         .info {
             display: -webkit-box;
@@ -111,89 +111,74 @@
             line-clamp: 3;
             min-height: 4.5em;
             line-height: 1.5;
-            color: #6b574a;
-            /* replaces opacity: .75 */
+            color: var(--muted);
         }
 
-        .site-footer {
-            background: var(--espresso);
-            color: var(--wheat);
-            border-top: 4px solid var(--caramel);
-        }
-
-        .site-footer h2 {
-            color: var(--caramel);
-        }
-
-        .site-footer .brand,
-        .site-footer dt {
-            color: var(--cream);
-        }
-
-        .site-footer dt {
-            font-weight: 400;
-        }
-
-        .site-footer a {
-            color: inherit;
-            text-decoration-color: var(--caramel);
+        /* One card per row on very narrow phones */
+        @media (max-width: 380px) {
+            #parent>* {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 
 <body id="top" class="d-flex flex-column min-vh-100">
 
-    <header class="menu-title text-center py-4 py-md-4">
-        <div class="container">
-            <div class="small tagline">Crafted fresh each dawn</div>
-            <h1 class="mb-0">Aethera Delights</h1>
-        </div>
-    </header>
+    <div class="px-3 pt-3">
+        <header class="brown-bar text-center rounded-4 shadow-sm p-4">
+            <div class="small text-uppercase" style="color: var(--wheat); letter-spacing: .12em;">Crafted fresh each
+                dawn</div>
+            <h1 class="mb-0">Aethera Pastries</h1>
+        </header>
+    </div>
 
-    <main class="container flex-grow-1 py-3 py-md-4">
+    <main class="container flex-grow-1 py-4">
         <div class="row justify-content-center mb-3">
             <div class="col-12 col-sm-8 col-md-6 col-lg-4">
-                <input id="search" type="search" class="form-control search-input rounded-pill"
+                <input id="search" type="search" class="form-control cream rounded-pill shadow-sm"
                     placeholder="Search the menu" aria-label="Search the menu" />
             </div>
         </div>
 
-        <div id="filters" class="d-flex flex-wrap justify-content-center gap-2 mb-3"></div>
+        <div id="filters" class="d-flex flex-wrap justify-content-center gap-2 mb-4"></div>
         <div id="status" class="visually-hidden" aria-live="polite"></div>
 
         <div id="parent" class="row g-3"></div>
     </main>
 
-    <footer class="site-footer mt-5 py-4 py-md-4">
+    <footer class="brown-bar border-bottom-0 border-top border-4 mt-5 py-4"
+        style="border-top-color: var(--caramel) !important;">
         <div class="container">
             <div class="row row-cols-1 row-cols-md-3 g-4 text-center text-md-start">
                 <div>
                     <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-2">
                         <img src="assets/img/Group20.svg" alt="" width="48" height="48" class="rounded-circle" />
-                        <span class="h4 brand mb-0">Aethera Delights</span>
+                        <span class="h4 mb-0">Aethera Pastries</span>
                     </div>
                     <p class="mb-0">Crafted fresh each dawn. Pastries baked in small batches.</p>
                 </div>
                 <div>
-                    <h2 class="fs-5 fw-bold mb-3">Opening hours</h2>
+                    <h2 class="fs-5 fw-bold mb-3 text-warning">Opening hours</h2>
                     <dl class="m-0">
-                        <dt>Monday to Friday</dt>
+                        <dt class="fw-normal">Monday to Friday</dt>
                         <dd class="mb-2">10:00 AM to 5:00 PM</dd>
-                        <dt>Saturday and Sunday</dt>
+                        <dt class="fw-normal">Saturday and Sunday</dt>
                         <dd class="mb-0">Closed</dd>
                     </dl>
                 </div>
                 <div>
-                    <h2 class="fs-5 fw-bold mb-3">Visit us</h2>
+                    <h2 class="fs-5 fw-bold mb-3 text-warning">Visit us</h2>
                     <address class="mb-2">473 Poblacion Street<br />Sto. Tomas, Batangas</address>
                     <div>0927 982 3812</div>
-                    <div>aetheradelights@gmail.com</div>
+                    <div>aetherapastries@gmail.com</div>
                 </div>
             </div>
             <hr class="my-4" />
             <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-center gap-2 small">
-                <span>&copy; 2026 Aethera Delights. All rights reserved.</span>
-                <a href="#top">Back to top</a>
+                <span>&copy; 2026 Aethera Pastries. All rights reserved.</span>
+                <a href="#top" class="text-reset">Back to top</a>
             </div>
         </div>
     </footer>
@@ -206,53 +191,156 @@
         const menu = [
             {
                 category: "Classic", products: [
-                    { name: "Cheese roll", price: 40, image: "cheeseroll.jpeg", info: "Soft bread rolled around creamy cheese." },
-                    { name: "Soft pretzel", price: 65, image: "pretzel.jpeg", info: "Chewy, golden pretzel sprinkled with coarse salt." },
-                    { name: "Baguette", price: 90, image: "baguette.jpeg", info: "Crusty outside, soft and airy inside." },
-                    { name: "Banana bread", price: 79, image: "bananabread.jpeg", info: "Moist, naturally sweet loaf made without eggs or butter.", bestSeller: true },
+                    {
+                        name: "Cheese roll",
+                        price: 40,
+                        image: "cheeseroll.jpeg",
+                        info: "Soft bread rolled around creamy cheese."
+                    },
+
+                    {
+                        name: "Soft pretzel",
+                        price: 65,
+                        image: "pretzel.jpeg",
+                        info: "Chewy, golden pretzel sprinkled with coarse salt."
+                    },
+
+                    {
+                        name: "Baguette",
+                        price: 90,
+                        image: "baguette.jpeg",
+                        info: "Crusty outside, soft and airy inside."
+                    },
+
+                    {
+                        name: "Banana bread",
+                        price: 79,
+                        image: "bananabread.jpeg",
+                        info: "Moist, naturally sweet loaf made without eggs or butter.",
+                        bestSeller: true
+                    },
                 ]
             },
             {
                 category: "Sweet", products: [
-                    { name: "Chocolate croissant", price: 80, image: "chocolatecroissant.jpeg", info: "Crisp, flaky layers wrapped around rich chocolate." },
-                    { name: "Ensaymada", price: 45, image: "ensaymada.jpeg", info: "Soft brioche topped with butter, sugar, and grated cheese.", bestSeller: true },
-                    { name: "Cinnamon roll", price: 70, image: "cinnamonroll.jpeg", info: "Swirled dough with cinnamon filling and sweet icing." },
-                    { name: "Glazed donut", price: 35, image: "donut.jpeg", info: "Light, fluffy ring finished with a sweet glaze." },
-                    { name: "Oatmeal raisin cookie", price: 45, image: "oatsraisin.jpeg", info: "Chewy oatmeal cookie packed with plump raisins." },
+                    {
+                        name: "Chocolate croissant",
+                        price: 80,
+                        image: "chocolatecroissant.jpeg",
+                        info: "Crisp, flaky layers wrapped around rich chocolate."
+                    },
+
+                    {
+                        name: "Ensaymada",
+                        price: 45,
+                        image: "ensaymada.jpeg",
+                        info: "Soft brioche topped with butter, sugar, and grated cheese.",
+                        bestSeller: true
+                    },
+
+                    {
+                        name: "Cinnamon roll",
+                        price: 70,
+                        image: "cinnamonroll.jpeg",
+                        info: "Swirled dough with cinnamon filling and sweet icing."
+                    },
+
+                    {
+                        name: "Glazed donut",
+                        price: 35,
+                        image: "donut.jpeg",
+                        info: "Light, fluffy ring finished with a sweet glaze."
+                    },
+
+                    {
+                        name: "Oatmeal raisin cookie",
+                        price: 45,
+                        image: "oatsraisin.jpeg",
+                        info: "Chewy oatmeal cookie packed with plump raisins."
+                    },
                 ]
             },
             {
                 category: "Savory", products: [
-                    { name: "Beef empanada", price: 55, image: "beefempanada.jpeg", info: "Flaky golden crust filled with seasoned beef.", bestSeller: true },
-                    { name: "Sausage roll", price: 60, image: "sausageroll.jpeg", info: "Savory sausage baked in buttery puff pastry." },
-                    { name: "Chicken floss bread", price: 55, image: "chickenfloss.jpeg", info: "Soft, sweet bun topped with fluffy shredded chicken.", bestSeller: true },
-                    { name: "Ham and cheese croissant", price: 85, image: "croissant.jpeg", info: "Buttery croissant filled with ham and melted cheese." },
-                    { name: "Garlic cheese bread", price: 55, image: "garlicbread.jpeg", info: "Toasted bread brushed with garlic butter and cheese.", bestSeller: true },
+                    {
+                        name: "Beef empanada",
+                        price: 55,
+                        image: "beefempanada.jpeg",
+                        info: "Flaky golden crust filled with seasoned beef.",
+                        bestSeller: true
+                    },
+
+                    {
+                        name: "Sausage roll",
+                        price: 60,
+                        image: "sausageroll.jpeg",
+                        info: "Savory sausage baked in buttery puff pastry."
+                    },
+
+                    {
+                        name: "Chicken floss bread",
+                        price: 55,
+                        image: "chickenfloss.jpeg",
+                        info: "Soft, sweet bun topped with fluffy shredded chicken.",
+                        bestSeller: true
+                    },
+
+                    {
+                        name: "Ham and cheese croissant",
+                        price: 85,
+                        image: "croissant.jpeg",
+                        info: "Buttery croissant filled with ham and melted cheese."
+                    },
+
+                    {
+                        name: "Garlic cheese bread",
+                        price: 55,
+                        image: "garlicbread.jpeg",
+                        info: "Toasted bread brushed with garlic butter and cheese.",
+                        bestSeller: true
+                    },
                 ]
             },
             {
                 category: "Spicy", products: [
-                    { name: "Spicy tuna pie", price: 60, image: "spicytunapie.jpeg", info: "Chili-spiced tuna in a flaky pie crust." },
-                    { name: "Jalapeño cheddar bread", price: 75, image: "jalapeno.jpeg", info: "Sharp cheddar and jalapeño baked into every slice." },
-                    { name: "Pepperoni pizza roll", price: 80, image: "pizzaroll.jpeg", info: "Pepperoni and melted cheese in a warm baked roll.", bestSeller: true },
+                    {
+                        name: "Spicy tuna pie",
+                        price: 60,
+                        image: "spicytunapie.jpeg",
+                        info: "Chili-spiced tuna in a flaky pie crust."
+                    },
+
+                    {
+                        name: "Jalapeño cheddar bread",
+                        price: 75, image: "jalapeno.jpeg",
+                        info: "Sharp cheddar and jalapeño baked into every slice."
+                    },
+
+                    {
+                        name: "Pepperoni pizza roll",
+                        price: 80,
+                        image: "pizzaroll.jpeg",
+                        info: "Pepperoni and melted cheese in a warm baked roll.",
+                        bestSeller: true
+                    },
                 ]
             },
         ];
 
         const products = menu.flatMap(m => m.products.map(p => ({ ...p, category: m.category })));
-        const arrows = { az: "↕", low: "↑", high: "↓" };
+        const sortLabels = { az: "Sort by price", low: "Price: ↑", high: "Price: ↓" };
         let cat = "All", query = "", sort = "az";
 
         const $ = id => document.getElementById(id);
         const button = (attrs, on, text) =>
-            `<button type="button" class="btn btn-sm rounded-pill filter-btn ${on ? "active" : ""}" ${attrs}>${text}</button>`;
+            `<button type="button" class="btn btn-sm rounded-pill shadow-sm cream ${on ? "active" : ""}" ${attrs}>${text}</button>`;
 
         const card = p => `
-            <div class="col-6 col-md-4 col-lg-3">
-              <div class="card product-card h-100 p-2 p-md-3 shadow rounded-4">
+            <div class="col-6 col-lg-3">
+              <div class="card product-card h-100 p-2 p-md-3 shadow-sm rounded-4">
                 <div class="position-relative mb-2 mb-md-3">
-                  <div class="pic ratio ratio-4x3 rounded-3 overflow-hidden">
-                    <img src="${folder + p.image}" alt="${p.name}" class="product-img object-fit-cover" loading="lazy" />
+                  <div class="ratio ratio-4x3 rounded-3 overflow-hidden bg-light">
+                    <img src="${folder + p.image}" alt="${p.name}" class="object-fit-cover" loading="lazy" />
                   </div>
                   <span class="position-absolute top-0 start-0 m-2 badge shadow-sm tag-${p.category.toLowerCase()}">${p.category}</span>
                   ${p.bestSeller ? `<span class="position-absolute top-0 end-0 m-2 badge shadow-sm tag-bestseller">Best seller</span>` : ""}
@@ -267,7 +355,7 @@
             $("filters").innerHTML =
                 ["All", ...menu.map(m => m.category)]
                     .map(c => button(`data-category="${c}" aria-pressed="${c === cat}"`, c === cat, c)).join("")
-                + button(`data-price="1" aria-label="Sort by price"`, sort !== "az", `Price ${arrows[sort]}`);
+                + button(`data-price="1" aria-label="Sort by price"`, sort !== "az", sortLabels[sort]);
 
             const q = query.trim().toLowerCase();
             const list = products
