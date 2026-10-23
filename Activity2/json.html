@@ -8,7 +8,6 @@
     <link rel="icon" type="image/svg+xml" href="assets/img/Group13.svg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
-
     <style>
         :root {
             --espresso: #4B3327;
@@ -26,14 +25,12 @@
             background: url("assets/img/bg.svg") center / cover fixed, var(--peach);
         }
 
-        /* Header and footer */
         .brown-bar {
             background: linear-gradient(135deg, var(--espresso), #6b4a38);
             color: var(--cream);
             border-bottom: 3px solid var(--caramel);
         }
 
-        /* Search box and filter buttons */
         .cream {
             background: var(--cream);
             color: var(--espresso);
@@ -59,7 +56,6 @@
             box-shadow: 0 0 0 .25rem rgba(201, 139, 69, .25);
         }
 
-        /* Product cards */
         .product-card {
             background: var(--cream);
             color: var(--espresso);
@@ -91,7 +87,6 @@
             background: #07268c;
         }
 
-        /* Keep card text aligned */
         .name,
         .info {
             display: -webkit-box;
@@ -114,7 +109,6 @@
             color: var(--muted);
         }
 
-        /* One card per row on very narrow phones */
         @media (max-width: 380px) {
             #parent>* {
                 flex: 0 0 100%;
@@ -148,37 +142,11 @@
         <div id="parent" class="row g-3"></div>
     </main>
 
-    <footer class="brown-bar border-bottom-0 border-top border-4 mt-5 py-4"
-        style="border-top-color: var(--caramel) !important;">
+    <footer class="brown-bar border-bottom-0 border-top border-2 mt-5 py-4"
+        style="border-top-color: var(--caramel) !important; border-radius: 26px 26px 0 0;">
         <div class="container">
-            <div class="row row-cols-1 row-cols-md-3 g-4 text-center text-md-start">
-                <div>
-                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-2">
-                        <img src="assets/img/Group20.svg" alt="" width="48" height="48" class="rounded-circle" />
-                        <span class="h4 mb-0">Aethera Pastries</span>
-                    </div>
-                    <p class="mb-0">Crafted fresh each dawn. Pastries baked in small batches.</p>
-                </div>
-                <div>
-                    <h2 class="fs-5 fw-bold mb-3 text-warning">Opening hours</h2>
-                    <dl class="m-0">
-                        <dt class="fw-normal">Monday to Friday</dt>
-                        <dd class="mb-2">10:00 AM to 5:00 PM</dd>
-                        <dt class="fw-normal">Saturday and Sunday</dt>
-                        <dd class="mb-0">Closed</dd>
-                    </dl>
-                </div>
-                <div>
-                    <h2 class="fs-5 fw-bold mb-3 text-warning">Visit us</h2>
-                    <address class="mb-2">473 Poblacion Street<br />Sto. Tomas, Batangas</address>
-                    <div>0927 982 3812</div>
-                    <div>aetherapastries@gmail.com</div>
-                </div>
-            </div>
-            <hr class="my-4" />
-            <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-center gap-2 small">
-                <span>&copy; 2026 Aethera Pastries. All rights reserved.</span>
-                <a href="#top" class="text-reset">Back to top</a>
+            <div class="text-center small">
+                &copy; 2026 Aethera Pastries. All rights reserved.
             </div>
         </div>
     </footer>
@@ -187,7 +155,7 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <script>
-        const folder = "assets/img/";
+    const folder = "assets/img/", $ = id => document.getElementById(id);
         const menu = [
             {
                 category: "Classic", products: [
@@ -197,21 +165,6 @@
                         image: "cheeseroll.jpeg",
                         info: "Soft bread rolled around creamy cheese."
                     },
-
-                    {
-                        name: "Soft pretzel",
-                        price: 65,
-                        image: "pretzel.jpeg",
-                        info: "Chewy, golden pretzel sprinkled with coarse salt."
-                    },
-
-                    {
-                        name: "Baguette",
-                        price: 90,
-                        image: "baguette.jpeg",
-                        info: "Crusty outside, soft and airy inside."
-                    },
-
                     {
                         name: "Banana bread",
                         price: 79,
@@ -229,54 +182,16 @@
                         image: "chocolatecroissant.jpeg",
                         info: "Crisp, flaky layers wrapped around rich chocolate."
                     },
-
-                    {
-                        name: "Ensaymada",
-                        price: 45,
-                        image: "ensaymada.jpeg",
-                        info: "Soft brioche topped with butter, sugar, and grated cheese.",
-                        bestSeller: true
-                    },
-
                     {
                         name: "Cinnamon roll",
                         price: 70,
                         image: "cinnamonroll.jpeg",
                         info: "Swirled dough with cinnamon filling and sweet icing."
                     },
-
-                    {
-                        name: "Glazed donut",
-                        price: 35,
-                        image: "donut.jpeg",
-                        info: "Light, fluffy ring finished with a sweet glaze."
-                    },
-
-                    {
-                        name: "Oatmeal raisin cookie",
-                        price: 45,
-                        image: "oatsraisin.jpeg",
-                        info: "Chewy oatmeal cookie packed with plump raisins."
-                    },
                 ]
             },
             {
                 category: "Savory", products: [
-                    {
-                        name: "Beef empanada",
-                        price: 55,
-                        image: "beefempanada.jpeg",
-                        info: "Flaky golden crust filled with seasoned beef.",
-                        bestSeller: true
-                    },
-
-                    {
-                        name: "Sausage roll",
-                        price: 60,
-                        image: "sausageroll.jpeg",
-                        info: "Savory sausage baked in buttery puff pastry."
-                    },
-
                     {
                         name: "Chicken floss bread",
                         price: 55,
@@ -284,14 +199,6 @@
                         info: "Soft, sweet bun topped with fluffy shredded chicken.",
                         bestSeller: true
                     },
-
-                    {
-                        name: "Ham and cheese croissant",
-                        price: 85,
-                        image: "croissant.jpeg",
-                        info: "Buttery croissant filled with ham and melted cheese."
-                    },
-
                     {
                         name: "Garlic cheese bread",
                         price: 55,
@@ -309,13 +216,6 @@
                         image: "spicytunapie.jpeg",
                         info: "Chili-spiced tuna in a flaky pie crust."
                     },
-
-                    {
-                        name: "Jalapeño cheddar bread",
-                        price: 75, image: "jalapeno.jpeg",
-                        info: "Sharp cheddar and jalapeño baked into every slice."
-                    },
-
                     {
                         name: "Pepperoni pizza roll",
                         price: 80,
@@ -327,60 +227,54 @@
             },
         ];
 
-        const products = menu.flatMap(m => m.products.map(p => ({ ...p, category: m.category })));
-        const sortLabels = { az: "Sort by price", low: "Price: ↑", high: "Price: ↓" };
-        let cat = "All", query = "", sort = "az";
+          const products = menu.flatMap(m => m.products.map(p => ({ ...p, category: m.category })));
+            const sortLabels = { az: "Sort by price", low: "Price: ↑", high: "Price: ↓" };
+            let cat = "All", query = "", sort = "az";
 
-        const $ = id => document.getElementById(id);
-        const button = (attrs, on, text) =>
-            `<button type="button" class="btn btn-sm rounded-pill shadow-sm cream ${on ? "active" : ""}" ${attrs}>${text}</button>`;
+            const button = (attrs, on, text) =>
+                `<button type="button" class="btn btn-sm rounded-pill shadow-sm cream ${on ? "active" : ""}" ${attrs}>${text}</button>`;
 
-        const card = p => `
-            <div class="col-6 col-lg-3">
-              <div class="card product-card h-100 p-2 p-md-3 shadow-sm rounded-4">
-                <div class="position-relative mb-2 mb-md-3">
-                  <div class="ratio ratio-4x3 rounded-3 overflow-hidden bg-light">
-                    <img src="${folder + p.image}" alt="${p.name}" class="object-fit-cover" loading="lazy" />
-                  </div>
-                  <span class="position-absolute top-0 start-0 m-2 badge shadow-sm tag-${p.category.toLowerCase()}">${p.category}</span>
-                  ${p.bestSeller ? `<span class="position-absolute top-0 end-0 m-2 badge shadow-sm tag-bestseller">Best seller</span>` : ""}
-                </div>
-                <div class="h5 name mb-1">${p.name}</div>
-                <div class="small info flex-grow-1">${p.info}</div>
-                <div class="price fw-bold mt-2 mt-md-3">₱${p.price.toLocaleString("en-PH")}</div>
+            const card = p => `
+        <div class="col-6 col-lg-3">
+          <div class="card product-card h-100 p-2 p-md-3 shadow-sm rounded-4">
+            <div class="position-relative mb-2 mb-md-3">
+              <div class="ratio ratio-4x3 rounded-3 overflow-hidden bg-light">
+                <img src="${folder + p.image}" alt="${p.name}" class="object-fit-cover" loading="lazy" />
               </div>
-            </div>`;
+              <span class="position-absolute top-0 start-0 m-2 badge shadow-sm tag-${p.category.toLowerCase()}">${p.category}</span>
+              ${p.bestSeller ? `<span class="position-absolute top-0 end-0 m-2 badge shadow-sm tag-bestseller">Best seller</span>` : ""}
+            </div>
+            <div class="h5 name mb-1">${p.name}</div>
+            <div class="small info flex-grow-1">${p.info}</div>
+            <div class="price fw-bold mt-2 mt-md-3">₱${p.price.toLocaleString("en-PH")}</div>
+          </div>
+        </div>`;
 
-        function render() {
-            $("filters").innerHTML =
-                ["All", ...menu.map(m => m.category)]
-                    .map(c => button(`data-category="${c}" aria-pressed="${c === cat}"`, c === cat, c)).join("")
-                + button(`data-price="1" aria-label="Sort by price"`, sort !== "az", sortLabels[sort]);
+            function render() {
+                $("filters").innerHTML =
+                    ["All", ...menu.map(m => m.category)].map(c => button(`data-category="${c}" aria-pressed="${c === cat}"`, c === cat, c)).join("")
+                    + button(`data-price="1" aria-label="Sort by price"`, sort !== "az", sortLabels[sort]);
 
-            const q = query.trim().toLowerCase();
-            const list = products
-                .filter(p => (cat === "All" || p.category === cat) && (p.name + " " + p.info).toLowerCase().includes(q))
-                .sort((a, b) => a.name.localeCompare(b.name));
-            if (sort === "low") list.sort((a, b) => a.price - b.price);
-            if (sort === "high") list.sort((a, b) => b.price - a.price);
+                const q = query.trim().toLowerCase(), dir = sort === "high" ? -1 : 1;
+                const list = products
+                    .filter(p => (cat === "All" || p.category === cat) && `${p.name} ${p.info}`.toLowerCase().includes(q))
+                    .sort((a, b) => (sort === "az" ? 0 : (a.price - b.price) * dir) || a.name.localeCompare(b.name));
 
-            $("parent").innerHTML = list.map(card).join("") ||
-                `<p class="col-12 text-center py-5 h5">Nothing matches "${q.replace(/</g, "&lt;")}"</p>`;
-            $("status").textContent = `${list.length} shown`;
-        }
+                $("parent").innerHTML = list.map(card).join("") ||
+                    `<p class="col-12 text-center py-5 h5">Nothing matches "${q.replace(/</g, "&lt;")}"</p>`;
+                $("status").textContent = `${list.length} shown`;
+            }
 
-        $("filters").onclick = e => {
-            const b = e.target.closest("button");
-            if (!b) return;
-            if (b.dataset.price) sort = sort === "low" ? "high" : "low";
-            else cat = b.dataset.category;
+            $("filters").onclick = e => {
+                const b = e.target.closest("button");
+                if (!b) return;
+                b.dataset.price ? sort = sort === "low" ? "high" : "low" : cat = b.dataset.category;
+                render();
+            };
+            $("search").oninput = e => { query = e.target.value; render(); };
+
             render();
-        };
-
-        $("search").oninput = e => { query = e.target.value; render(); };
-
-        render();
-    </script>
-</body>
-
-</html>
+        </script>
+    </body>
+    
+    </html>
