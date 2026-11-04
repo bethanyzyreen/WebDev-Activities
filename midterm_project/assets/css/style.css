@@ -111,14 +111,12 @@ header {
     border-radius: 1rem;
     opacity: 0;
     z-index: 0;
-    /* outgoing image: eases out slowly at first so it stays visible while the next one fades in */
     transition: opacity 1.2s cubic-bezier(.55, 0, .75, 1);
     will-change: opacity;
     backface-visibility: hidden;
     filter: drop-shadow(0 12px 30px rgba(0, 0, 0, .55));
 }
 
-/* incoming image: sits on top and fades in at the same time as the previous one fades out */
 #heroSlideshow img.active {
     opacity: 1;
     z-index: 1;
@@ -219,6 +217,7 @@ main:not(.invisible) {
         animation: none;
     }
 }
+
 #bluebirdAudio {
     color-scheme: dark;
     height: 40px;
@@ -257,7 +256,6 @@ main:not(.invisible) {
     transform: translateX(3px);
 }
 
-/* header: logo sits on the very top layer */
 header {
     z-index: 1030 !important;
 }
@@ -278,7 +276,6 @@ header {
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .45));
 }
 
-/* welcome card: village picture as a faint background */
 .hero-welcome {
     overflow: hidden;
     isolation: isolate;
