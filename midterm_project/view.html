@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NARUTOVERSE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+
+<body class="min-vh-100 text-white overflow-hidden">
+  <div id="loadingScreen" class="fade show" role="status" aria-label="Loading NARUTOVERSE">
+    <img src="assets/img/narutologo.jpeg" class="img-fluid" width="600" height="351" alt="Naruto"
+      onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+    <h2 class="display-1 text-warning text-center" hidden>NARUTOVERSE</h2>
+  </div>
+
+  <header class="invisible position-fixed top-0 start-0 w-100 z-1 bg-dark bg-opacity-50 border-bottom shadow">
+    <h1 class="text-center fs-4 m-0 py-3" style="letter-spacing:.18em">NARUTOVERSE</h1>
+  </header>
+
+  <main class="invisible container mt-5 py-5" style="max-width:56rem">
+    <a href="index.html" id="backLink" class="btn bg-warning text-dark rounded-pill px-4 mb-4">&larr; Back to list</a>
+
+    <div class="detail-grid">
+      <article class="glass rounded-5 p-4 p-md-5 pt-5 text-center d-flex flex-column align-items-center gap-3">
+        <div id="appearanceSelector" class="position-absolute top-0 end-0 m-3" aria-label="Character appearance"></div>
+
+        <div id="imageContainer" class="ratio ratio-1x1 rounded-circle overflow-hidden border border-2 border-warning"
+          style="width:min(100%,260px)">
+          <img id="characterImage" src="" class="object-fit-cover" style="object-position:top" alt="">
+        </div>
+
+        <div id="characterNumber" class="h5 m-0 text-warning"></div>
+
+        <h2 id="characterName" class="h3 m-0">
+          <div class="spinner-border text-warning" role="status"><span class="visually-hidden">Loading...</span></div>
+        </h2>
+
+        <span id="natureTypeBadge" class="rounded-pill px-4 py-1 fw-medium text-dark"></span>
+      </article>
+
+      <section id="groupSection" class="glass rounded-5 p-4" aria-label="Clan and affiliation" hidden>
+        <h3 class="h6 text-warning text-uppercase mb-3">Clan &amp; affiliation</h3>
+        <div id="groupDetails" class="small text-white text-opacity-75"></div>
+      </section>
+
+      <section id="voiceSection" class="glass rounded-5 p-4" aria-label="Voice actors" hidden>
+        <h3 class="h6 text-warning text-uppercase mb-3">Voice actors</h3>
+        <div id="voiceCredits" class="small text-white text-opacity-75"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script src="assets/js/common.js"></script>
+  <script>
+    const CHARACTER_API_URL = 'https://dattebayo-api.onrender.com/characters/';
+    const APPEARANCES = ['younger', 'older'];
+    const VOICE_LANGUAGES = [['japanese', 'Japanese'], ['english', 'English']];
+
+    const [characterNameElement, characterNumberElement, characterImageElement, natureTypeBadgeElement, imageContainerElement,
+      appearanceSelectorElement, voiceSectionElement, groupSectionElement] =
+      ['characterName', 'characterNumber', 'characterImage', 'natureTypeBadge', 'imageContainer',
+        'appearanceSelector', 'voiceSection', 'groupSection'].map($);
+
+    const urlParams = new URLSearchParams(location.search);
+    const characterId = urlParams.get('id');
+    urlParams.delete('id');
+    if (urlParams.has('page')) $('backLink').href = 'index.html?' + urlParams;
+    if (characterId != null) characterNumberElement.textContent = '#' + characterId;
+
+    let character = null;
+    let currentAppearance = 'younger';
+
+    const getAppearanceImage = (characterData, appearanceKey) => (characterData.images && characterData.images[APPEARANCES.indexOf(appearanceKey)]) || '';
+
+    const formatList = rawValues => [].concat(rawValues || []).map(value => String(value).replace(/\s+/g, ' ').trim()).filter(Boolean).join(', ');
+
+    const renderRows = (section, rows) => {
+      rows = rows.map(([label, value]) => [label, formatList(value)]).filter(([, value]) => value);
+      section.lastElementChild.innerHTML = rows.map(([label, value]) => `<div class="mb-2"><div class="text-warning">${label}</div><div>${value}</div></div>`).join('');
+      section.hidden = !rows.length;
+    };
+
+    const updateAppearanceButtons = () => appearanceSelectorElement.querySelectorAll('button').forEach(button => {
+      const isSelected = button.dataset.appearance === currentAppearance;
+      button.setAttribute('aria-pressed', isSelected);
+      button.className = 'btn btn-sm rounded-pill text-capitalize ' + (isSelected ? 'bg-warning text-dark' : 'text-warning');
+    });
+    const renderAppearanceSelector = () => {
+      if (APPEARANCES.filter(key => getAppearanceImage(character, key)).length < 2) {
+        appearanceSelectorElement.innerHTML = '<span class="badge rounded-pill glass fw-normal text-white text-opacity-75">Only one appearance available</span>';
+        return;
+      }
+      appearanceSelectorElement.innerHTML = `<div class="d-inline-flex gap-1 p-1 rounded-pill glass" role="group" aria-label="Character appearance">${APPEARANCES.map(key => `<button type="button" data-appearance="${key}">${key}</button>`).join('')}</div>`;
+      appearanceSelectorElement.querySelectorAll('button').forEach(button => button.onclick = () => selectAppearance(button.dataset.appearance));
+      updateAppearanceButtons();
+    };
+
+    const showCharacterImage = () => {
+      characterImageElement.alt = `${character.name} (${character.images && character.images.length > 1 ? currentAppearance + ' version' : 'appearance'})`;
+      characterImageElement.onerror = () => { characterImageElement.onerror = null; characterImageElement.src = PLACEHOLDER_IMAGE; };
+      characterImageElement.src = getAppearanceImage(character, currentAppearance) || PLACEHOLDER_IMAGE;
+    };
+
+    const selectAppearance = appearanceKey => {
+      if (appearanceKey === currentAppearance || !getAppearanceImage(character, appearanceKey)) return;
+      currentAppearance = appearanceKey;
+      updateAppearanceButtons();
+      showCharacterImage();
+    };
+
+    const loadCharacter = async () => {
+      try {
+        const response = await fetch(CHARACTER_API_URL + encodeURIComponent(characterId));
+        if (!response.ok) throw new Error(response.status);
+        character = await response.json();
+        const natureType = getNatureType(character);
+
+        characterNumberElement.textContent = '#' + (character.id ?? characterId);
+        characterNameElement.textContent = character.name;
+        natureTypeBadgeElement.textContent = natureType;
+        imageContainerElement.style.backgroundColor = natureTypeBadgeElement.style.backgroundColor = getTypeColor(natureType);
+
+        currentAppearance = !getAppearanceImage(character, 'younger') && getAppearanceImage(character, 'older') ? 'older' : 'younger';
+        renderAppearanceSelector();
+        showCharacterImage();
+        const personal = character.personal || {};
+        const voiceActors = character.voiceActors || {};
+        renderRows(groupSectionElement, [['Clan', personal.clan], ['Affiliation', personal.affiliation]]);
+        renderRows(voiceSectionElement, VOICE_LANGUAGES.map(([language, label]) => [label, voiceActors[language]]));
+        await preloadImages([getAppearanceImage(character, currentAppearance)]);
+      } catch {
+        characterNameElement.textContent = 'Could not load character';
+        appearanceSelectorElement.innerHTML = '';
+        voiceSectionElement.hidden = groupSectionElement.hidden = true;
+      } finally {
+        hideLoadingScreen();
+      }
+    };
+
+    if (characterId != null) {
+      loadCharacter();
+    } else {
+      characterNameElement.textContent = 'No character selected';
+      hideLoadingScreen();
+    }
+  </script>
+</body>
+
+</html>
