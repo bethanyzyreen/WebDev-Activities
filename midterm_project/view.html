@@ -13,144 +13,281 @@
 </head>
 
 <body class="min-vh-100 text-white overflow-hidden">
-  <div id="loadingScreen" class="fade show" role="status" aria-label="Loading NARUTOVERSE">
+  <div id="loadingScreen"
+    class="fade show position-fixed top-0 bottom-0 start-0 end-0 z-3 d-flex align-items-center justify-content-center"
+    style="background:inherit;transition:opacity .9s ease, visibility .9s ease" role="status"
+    aria-label="Loading NARUTOVERSE">
     <img src="assets/img/narutologo.jpeg" class="img-fluid" width="600" height="351" alt="Naruto"
       onerror="this.hidden=true;this.nextElementSibling.hidden=false">
-    <h2 class="display-1 text-warning text-center" hidden>NARUTOVERSE</h2>
+    <h2 class="display-1 text-warning text-center" style="font-family:'Playfair Display',serif" hidden>NARUTOVERSE</h2>
   </div>
 
-  <header class="invisible position-fixed top-0 start-0 w-100 z-1 bg-dark bg-opacity-50 border-bottom shadow">
-    <h1 class="site-title text-center fs-4 m-0 py-2" style="letter-spacing:.18em"><img src="assets/img/logo.png"
-        class="site-logo" width="40" height="40" alt="">NARUTOVERSE</h1>
+  <header id="siteHeader"
+    class="invisible position-fixed top-0 start-0 w-100 bg-dark bg-opacity-50 border-bottom shadow"
+    style="z-index:1030;border-image:linear-gradient(90deg, transparent, var(--color-orange) 30%, var(--color-red) 70%, transparent) 1;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)">
+    <h1 class="d-flex align-items-center justify-content-center text-center fs-4 m-0 py-2"
+      style="letter-spacing:.18em;gap:.75rem;font-family:'Playfair Display',serif"><img src="assets/img/logo.png"
+        class="position-relative z-1 object-fit-contain" style="filter:drop-shadow(0 2px 6px rgba(0, 0, 0, .45))"
+        width="40" height="40" alt="">NARUTOVERSE</h1>
   </header>
 
-  <main class="invisible container mt-5 py-5" style="max-width:56rem">
+  <main id="siteMain" class="invisible container mt-5 py-5" style="max-width:56rem">
     <a href="index.html" id="backLink" class="btn bg-warning text-dark rounded-pill px-4 mb-4">&larr; Back to list</a>
 
-    <div class="detail-grid">
-      <article class="glass rounded-5 p-4 p-md-5 pt-5 text-center d-flex flex-column align-items-center gap-3">
-        <div id="appearanceSelector" class="position-absolute top-0 end-0 m-3" aria-label="Character appearance"></div>
+    <div class="detail-grid d-grid gap-3 align-items-start">
+      <article
+        class="glass rounded-5 p-4 p-md-5 text-center d-flex flex-column align-items-center align-self-start gap-2">
+        <div id="appearanceSelector" aria-label="Character appearance"></div>
 
         <div id="imageContainer" class="ratio ratio-1x1 rounded-circle overflow-hidden border border-2 border-warning"
-          style="width:min(100%,260px)">
+          style="width:min(100%,240px)">
           <img id="characterImage" src="" class="object-fit-cover" style="object-position:top" alt="">
         </div>
 
         <div id="characterNumber" class="h5 m-0 text-warning"></div>
 
-        <h2 id="characterName" class="h3 m-0">
+        <h2 id="characterName" class="h3 m-0"
+          style="text-wrap:balance;overflow-wrap:anywhere;font-family:'Playfair Display',serif">
           <div class="spinner-border text-warning" role="status"><span class="visually-hidden">Loading...</span></div>
         </h2>
 
-        <span id="natureTypeBadge" class="rounded-pill px-4 py-1 fw-medium text-dark"></span>
+        <span id="natureTypeBadge" class="rounded-pill px-4 py-1 mt-1 fw-medium text-dark"></span>
       </article>
 
-      <section id="groupSection" class="glass rounded-5 p-4" aria-label="Clan and affiliation" hidden>
-        <h3 class="h6 text-warning text-uppercase mb-3">Clan &amp; affiliation</h3>
+      <section id="groupSection" class="glass rounded-5 p-4 lh-base" aria-label="Clan and affiliation" hidden>
+        <h3 class="h6 text-warning text-uppercase mb-3" style="letter-spacing:.12em">Clan &amp; affiliation</h3>
         <div id="groupDetails" class="small text-white text-opacity-75"></div>
       </section>
 
-      <section id="voiceSection" class="glass rounded-5 p-4" aria-label="Voice actors" hidden>
-        <h3 class="h6 text-warning text-uppercase mb-3">Voice actors</h3>
+      <section id="voiceSection" class="glass rounded-5 p-4 lh-base" aria-label="Voice actors" hidden>
+        <h3 class="h6 text-warning text-uppercase mb-3" style="letter-spacing:.12em">Voice actors</h3>
         <div id="voiceCredits" class="small text-white text-opacity-75"></div>
       </section>
     </div>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-    crossorigin="anonymous"></script>
   <script src="assets/js/common.js"></script>
   <script>
-    const CHARACTER_API_URL = 'https://dattebayo-api.onrender.com/characters/';
-    const APPEARANCES = ['younger', 'older'];
-    const VOICE_LANGUAGES = [['japanese', 'Japanese'], ['english', 'English']];
+    const API_URL = 'https://dattebayo-api.onrender.com/characters/';
+    const STATE_KEY = 'nv_view_state';
+    const CACHE_KEY = 'nv_char_';
+    var appearances = ['younger', 'older'];
+    var voiceLanguages = [['japanese', 'Japanese'], ['english', 'English']];
 
-    const [characterNameElement, characterNumberElement, characterImageElement, natureTypeBadgeElement, imageContainerElement,
-      appearanceSelectorElement, voiceSectionElement, groupSectionElement] =
-      ['characterName', 'characterNumber', 'characterImage', 'natureTypeBadge', 'imageContainer',
-        'appearanceSelector', 'voiceSection', 'groupSection'].map($);
+    // element initializations
+    var elName = document.getElementById("characterName");
+    var elNumber = document.getElementById("characterNumber");
+    var elImage = document.getElementById("characterImage");
+    var elType = document.getElementById("natureTypeBadge");
+    var elImageContainer = document.getElementById("imageContainer");
+    var elAppearanceSelector = document.getElementById("appearanceSelector");
+    var elGroupSection = document.getElementById("groupSection");
+    var elGroupDetails = document.getElementById("groupDetails");
+    var elVoiceSection = document.getElementById("voiceSection");
+    var elVoiceCredits = document.getElementById("voiceCredits");
+    var elBackLink = document.getElementById("backLink");
 
-    const urlParams = new URLSearchParams(location.search);
-    const characterId = urlParams.get('id');
+    var character = null;
+    var currentAppearance = 'younger';
+    var contentReady = false;
+    var scrollTimer = null;
+
+    var state = load(localStorage, STATE_KEY);
+    if (state && !state.id) {
+      state = null;
+    }
+
+    var urlParams = new URLSearchParams(window.location.search);
+
+    if (!urlParams.get('id') && state) {
+      urlParams = new URLSearchParams(state.query || '');
+      urlParams.set('id', state.id);
+      history.replaceState(null, '', 'view.html?' + urlParams);
+    }
+
+    var id = urlParams.get('id');
     urlParams.delete('id');
-    if (urlParams.has('page')) $('backLink').href = 'index.html?' + urlParams;
-    if (characterId != null) characterNumberElement.textContent = '#' + characterId;
+    if (urlParams.toString() != '') {
+      elBackLink.href = 'index.html?' + urlParams;
+    }
 
-    let character = null;
-    let currentAppearance = 'younger';
+    if (id) {
+      elNumber.innerHTML = '#' + escapeHtml(id);
 
-    const getAppearanceImage = (characterData, appearanceKey) => (characterData.images && characterData.images[APPEARANCES.indexOf(appearanceKey)]) || '';
-
-    const formatList = rawValues => [].concat(rawValues || []).map(value => String(value).replace(/\s+/g, ' ').trim()).filter(Boolean).join(', ');
-
-    const renderRows = (section, rows) => {
-      rows = rows.map(([label, value]) => [label, formatList(value)]).filter(([, value]) => value);
-      section.lastElementChild.innerHTML = rows.map(([label, value]) => `<div class="mb-2"><div class="text-warning">${label}</div><div>${value}</div></div>`).join('');
-      section.hidden = !rows.length;
-    };
-
-    const updateAppearanceButtons = () => appearanceSelectorElement.querySelectorAll('button').forEach(button => {
-      const isSelected = button.dataset.appearance === currentAppearance;
-      button.setAttribute('aria-pressed', isSelected);
-      button.className = 'btn btn-sm rounded-pill text-capitalize ' + (isSelected ? 'bg-warning text-dark' : 'text-warning');
-    });
-    const renderAppearanceSelector = () => {
-      if (APPEARANCES.filter(key => getAppearanceImage(character, key)).length < 2) {
-        appearanceSelectorElement.innerHTML = '<span class="badge rounded-pill glass fw-normal text-white text-opacity-75">Only one appearance available</span>';
-        return;
+      if (!state || state.id != id) {
+        state = { id: id, appearance: null, scrollY: 0 };
       }
-      appearanceSelectorElement.innerHTML = `<div class="d-inline-flex gap-1 p-1 rounded-pill glass" role="group" aria-label="Character appearance">${APPEARANCES.map(key => `<button type="button" data-appearance="${key}">${key}</button>`).join('')}</div>`;
-      appearanceSelectorElement.querySelectorAll('button').forEach(button => button.onclick = () => selectAppearance(button.dataset.appearance));
+      state.query = urlParams.toString();
+      save(localStorage, STATE_KEY, state);
+
+      history.scrollRestoration = 'manual';
+    }
+
+    function rememberScroll() {
+      if (!state || !contentReady) return;
+      state.scrollY = Math.round(window.scrollY);
+      save(localStorage, STATE_KEY, state);
+    }
+
+    window.onscroll = () => {
+      if (scrollTimer == null) {
+        scrollTimer = setTimeout(() => { scrollTimer = null; rememberScroll(); }, 150);
+      }
+    };
+    window.onpagehide = rememberScroll;
+    document.onvisibilitychange = () => { if (document.hidden) rememberScroll(); };
+
+    function getAppearanceImage(characterData, appearanceKey) {
+      var images = characterData.images || [];
+      return images[appearances.indexOf(appearanceKey)] || '';
+    }
+
+    function renderRows(elSection, elDetails, rows) {
+      var shown = [];
+      for (var i = 0; i < rows.length; i++) {
+        var value = toList(rows[i][1]).join(', ').replace(/\s+/g, ' ').trim();
+        if (value != '') shown.push([rows[i][0], value]);
+      }
+
+      var html = '';
+      for (var j = 0; j < shown.length; j++) {
+        var spacing = 'mb-2';
+        if (j == shown.length - 1) spacing = 'mb-0';
+        html += '<div class="' + spacing + '"><div class="text-warning">' + shown[j][0] + '</div><div>' + escapeHtml(shown[j][1]) + '</div></div>';
+      }
+      elDetails.innerHTML = html;
+      elSection.hidden = html == '';
+    }
+
+    function updateAppearanceButtons() {
+      for (var i = 0; i < appearances.length; i++) {
+        var elButton = document.getElementById("appearance-" + appearances[i]);
+        var isSelected = appearances[i] == currentAppearance;
+        elButton.setAttribute('aria-pressed', isSelected);
+        elButton.className = 'btn btn-sm rounded-pill text-capitalize text-warning';
+        if (isSelected) {
+          elButton.className = 'btn btn-sm rounded-pill text-capitalize bg-warning text-dark';
+        }
+      }
+    }
+
+    function renderAppearanceSelector() {
+      elAppearanceSelector.innerHTML = '';
+      if (!getAppearanceImage(character, 'younger') || !getAppearanceImage(character, 'older')) return;
+
+      var buttons = '';
+      for (var i = 0; i < appearances.length; i++) {
+        buttons += '<button type="button" id="appearance-' + appearances[i] + '" onclick="selectAppearance(\'' + appearances[i] + '\')">' + appearances[i] + '</button>';
+      }
+      elAppearanceSelector.innerHTML = '<div class="d-inline-flex gap-1 p-1 rounded-pill glass" role="group" aria-label="Character appearance">' + buttons + '</div>';
       updateAppearanceButtons();
-    };
+    }
 
-    const showCharacterImage = () => {
-      characterImageElement.alt = `${character.name} (${character.images && character.images.length > 1 ? currentAppearance + ' version' : 'appearance'})`;
-      characterImageElement.onerror = () => { characterImageElement.onerror = null; characterImageElement.src = PLACEHOLDER_IMAGE; };
-      characterImageElement.src = getAppearanceImage(character, currentAppearance) || PLACEHOLDER_IMAGE;
-    };
+    function showCharacterImage() {
+      var label = 'appearance';
+      if (character.images && character.images.length > 1) {
+        label = currentAppearance + ' version';
+      }
+      elImage.alt = character.name + ' (' + label + ')';
+      elImage.onerror = () => {
+        elImage.onerror = null;
+        elImage.src = PLACEHOLDER_IMAGE;
+      };
+      elImage.src = getAppearanceImage(character, currentAppearance) || PLACEHOLDER_IMAGE;
+    }
 
-    const selectAppearance = appearanceKey => {
-      if (appearanceKey === currentAppearance || !getAppearanceImage(character, appearanceKey)) return;
+    function selectAppearance(appearanceKey) {
+      if (appearanceKey == currentAppearance || !getAppearanceImage(character, appearanceKey)) return;
       currentAppearance = appearanceKey;
+      state.appearance = appearanceKey;
+      save(localStorage, STATE_KEY, state);
       updateAppearanceButtons();
       showCharacterImage();
-    };
+    }
 
-    const loadCharacter = async () => {
+    function renderCharacter(data) {
+      character = data;
+
+      var type = getNatureType(character);
+      elNumber.innerHTML = '#' + escapeHtml(character.id || id);
+      elName.innerHTML = escapeHtml(character.name);
+      elType.innerHTML = escapeHtml(type);
+      elImageContainer.style.backgroundColor = getTypeColor(type);
+      elType.style.backgroundColor = getTypeColor(type);
+
+      currentAppearance = 'younger';
+      if (!getAppearanceImage(character, 'younger') && getAppearanceImage(character, 'older')) {
+        currentAppearance = 'older';
+      }
+      if (state.appearance && getAppearanceImage(character, state.appearance)) {
+        currentAppearance = state.appearance;
+      }
+      renderAppearanceSelector();
+      showCharacterImage();
+
+      var personal = character.personal || {};
+      var voiceActors = character.voiceActors || {};
+      renderRows(elGroupSection, elGroupDetails, [['Clan', personal.clan], ['Affiliation', personal.affiliation]]);
+
+      var voiceRows = [];
+      for (var i = 0; i < voiceLanguages.length; i++) {
+        voiceRows.push([voiceLanguages[i][1], voiceActors[voiceLanguages[i][0]]]);
+      }
+      renderRows(elVoiceSection, elVoiceCredits, voiceRows);
+    }
+
+    function restoreScroll() {
+      contentReady = true;
+      if (state.scrollY > 0) {
+        window.scrollTo({ top: state.scrollY, behavior: 'instant' });
+      }
+    }
+
+    const getCharacter = async () => {
+      var cached = load(localStorage, CACHE_KEY + id);
+      var first = cached;
+      if (!first || !first.name) {
+        var allCharacters = load(sessionStorage, 'nv_all_v2') || [];
+        first = null;
+        for (var i = 0; i < allCharacters.length; i++) {
+          if (String(allCharacters[i].id) == String(id)) first = allCharacters[i];
+        }
+      }
+      if (first) {
+        renderCharacter(first);
+        restoreScroll();
+        await hideLoadingScreen();
+      }
+
       try {
-        const response = await fetch(CHARACTER_API_URL + encodeURIComponent(characterId));
+        const response = await fetch(API_URL + encodeURIComponent(id));
         if (!response.ok) throw new Error(response.status);
-        character = await response.json();
-        const natureType = getNatureType(character);
+        const fresh = await response.json();
+        save(localStorage, CACHE_KEY + id, fresh);
 
-        characterNumberElement.textContent = '#' + (character.id ?? characterId);
-        characterNameElement.textContent = character.name;
-        natureTypeBadgeElement.textContent = natureType;
-        imageContainerElement.style.backgroundColor = natureTypeBadgeElement.style.backgroundColor = getTypeColor(natureType);
+        if (!first || JSON.stringify(fresh) != JSON.stringify(cached)) {
+          renderCharacter(fresh);
+          restoreScroll();
+        }
+      } catch (error) {
+        if (!first) {
+          elName.innerHTML = 'Could not load character';
+          elAppearanceSelector.innerHTML = '';
+          elVoiceSection.hidden = true;
+          elGroupSection.hidden = true;
+        }
+      }
 
-        currentAppearance = !getAppearanceImage(character, 'younger') && getAppearanceImage(character, 'older') ? 'older' : 'younger';
-        renderAppearanceSelector();
-        showCharacterImage();
-        const personal = character.personal || {};
-        const voiceActors = character.voiceActors || {};
-        renderRows(groupSectionElement, [['Clan', personal.clan], ['Affiliation', personal.affiliation]]);
-        renderRows(voiceSectionElement, VOICE_LANGUAGES.map(([language, label]) => [label, voiceActors[language]]));
-        await preloadImages([getAppearanceImage(character, currentAppearance)]);
-      } catch {
-        characterNameElement.textContent = 'Could not load character';
-        appearanceSelectorElement.innerHTML = '';
-        voiceSectionElement.hidden = groupSectionElement.hidden = true;
-      } finally {
-        hideLoadingScreen();
+      if (!first) {
+        restoreScroll();
+        await hideLoadingScreen();
       }
     };
 
-    if (characterId != null) {
-      loadCharacter();
+    if (id) {
+      getCharacter();
     } else {
-      characterNameElement.textContent = 'No character selected';
+      elName.innerHTML = 'No character selected';
       hideLoadingScreen();
     }
   </script>
