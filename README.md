@@ -6,10 +6,9 @@ A collection of hands-on activities and the midterm project for the Web Developm
 
 | Folder | Activity | Status |
 | --- | --- | --- |
-| [`Activity1`](Activity1/) | Bento Layout, **Study Nook** dashboard | Done |
-| [`Activity2`](Activity2/) | JSON, **Aethera Pastries** menu (`json.html`) | Done |
-| [`midterm_project`](midterm_project/) | Midterm Project, **NARUTOVERSE** character guide (`index.html`) | Done |
-
+| [Activity1](./Activity1/bento.html) | Bento Layout, **Study Nook** dashboard | Done |
+| [Activity2](./Activity2/json.html) | JSON, **Aethera Pastries** menu | Done |
+| [midterm_project](./midterm_project/index.html) | Midterm Project, **NARUTOVERSE** character guide | Done |
 ## Activity 1: Study Nook (Bento Layout)
 
 A single-page student dashboard built with a bento-style card layout. Open `Activity1/bento.html` in a browser to view it.

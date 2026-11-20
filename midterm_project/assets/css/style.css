@@ -185,3 +185,23 @@ main:not(.invisible) {
 #appearanceSelector:empty {
   display: none;
 }
+
+@keyframes liveFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+#characterGrid.live-fade .character-card {
+  animation: liveFade .2s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #characterGrid.live-fade .character-card {
+    animation: none;
+  }
+}

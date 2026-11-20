@@ -117,7 +117,7 @@
                     <form class="input-group" role="search" onsubmit="event.preventDefault(); searchCharacters()">
                         <input type="search" id="searchInput" class="form-control rounded-start-pill ps-4"
                             style="--bs-body-bg:rgba(var(--bs-white-rgb), .1);--bs-border-color:rgba(255, 255, 255, .25)"
-                            placeholder="e.g. Naruto or 30" oninput="checkSearchCleared()">
+                            placeholder="e.g. Naruto or 30" autocomplete="off" oninput="onSearchInput()">
                         <button type="submit" class="btn bg-warning text-dark rounded-end-pill px-4">Search</button>
                     </form>
                 </div>
@@ -189,6 +189,7 @@
         var allCharacters = null;
         var groupFilterReady = false;
         var latestRequest = 0;
+        var liveMode = false;
         var scrollReady = false;
         var scrollTimer = null;
 
@@ -387,24 +388,52 @@
             allCharacters = summaries;
         };
 
+        // ---- Search helpers ----
+        // Lowercase, strip accents, collapse whitespace
+        function normalizeText(value) {
+            return String(value == null ? '' : value)
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase().replace(/\s+/g, ' ').trim();
+        }
+
+        // Same as above, and ignores a leading "#" so "#30" works like "30"
+        function normalizeQuery(value) {
+            return normalizeText(value).replace(/^#\s*/, '');
+        }
+
+        function inSelectedGroup(character) {
+            if (selectedGroup == '') return true;
+            for (var i = 0; i < character.groups.length; i++) {
+                if (character.groups[i][0] == selectedGroup) return true;
+            }
+            return false;
+        }
+
+        // Search button: name contains the text, or ID equals it exactly
+        function matchesSearch(character, query) {
+            if (query == '') return true;
+            return normalizeText(character.name).indexOf(query) != -1 || String(character.id) == query;
+        }
+
+        // While typing: name contains the text, or ID starts with it
+        function matchesLive(character, query) {
+            if (query == '') return true;
+            if (normalizeText(character.name).indexOf(query) != -1) return true;
+            return /^\d+$/.test(query) && String(character.id).indexOf(query) == 0;
+        }
+
         const getCharactersForPage = async () => {
             await loadAllCharacters();
             if (!groupFilterReady) {
                 populateGroupFilter();
             }
 
-            var query = searchQuery.toLowerCase().replace(/^#/, '');
+            var query = normalizeQuery(searchQuery);
             var matches = [];
             for (var i = 0; i < allCharacters.length; i++) {
                 var character = allCharacters[i];
-
-                var inGroup = selectedGroup == '';
-                for (var j = 0; j < character.groups.length; j++) {
-                    if (character.groups[j][0] == selectedGroup) inGroup = true;
-                }
-                var found = query == '' || String(character.name).toLowerCase().indexOf(query) != -1 || String(character.id) == query;
-
-                if (inGroup && found) matches.push(character);
+                var found = liveMode ? matchesLive(character, query) : matchesSearch(character, query);
+                if (inSelectedGroup(character) && found) matches.push(character);
             }
 
             if (sortOrder == 'asc') {
@@ -489,13 +518,13 @@
             save(sessionStorage, LIST_KEY, list);
         }
 
-        const getCharacters = async () => {
+        const getCharacters = async (live) => {
             latestRequest++;
             var thisRequest = latestRequest;
 
             if (document.getElementById("loadingScreen")) {
                 elPageNumber.innerHTML = page;
-            } else {
+            } else if (!live) {
                 elParent.style.minHeight = elParent.offsetHeight + 'px';
                 elParent.innerHTML = '<div class="w-100 text-center my-5"><div class="spinner-border text-warning" role="status"><span class="visually-hidden">Loading...</span></div></div>';
                 document.getElementById("characters").scrollIntoView();
@@ -512,7 +541,11 @@
                 var characters = pageResult.characters;
                 if (characters.length == 0) {
                     elResultCount.innerHTML = '0 characters';
-                    elParent.innerHTML = '<div class="glass w-100 rounded-4 p-4 text-center">No characters found. Try another name, ID or filter.</div>';
+                    var emptyDetail = 'Try another name, ID or filter.';
+                    if (searchQuery != '') {
+                        emptyDetail = 'Nothing matches &ldquo;' + escapeHtml(searchQuery) + '&rdquo;. Try another name, ID or filter.';
+                    }
+                    elParent.innerHTML = '<div class="glass w-100 rounded-4 p-4 text-center" role="status"><div class="fw-bold mb-1">No characters found</div><div class="small text-white text-opacity-75">' + emptyDetail + '</div></div>';
                     return;
                 }
                 var firstShown = (page - 1) * perPage + 1;
@@ -522,9 +555,10 @@
                 for (var i = 0; i < characters.length; i++) {
                     cardImages.push(characters[i].images[0]);
                 }
-                await preloadImages(cardImages);
+                if (!live) await preloadImages(cardImages);
                 if (thisRequest != latestRequest) return;
 
+                elParent.classList.toggle('live-fade', !!live);
                 elParent.innerHTML = '';
                 for (var j = 0; j < characters.length; j++) {
                     var id = characters[j].id;
@@ -562,8 +596,8 @@
             }
         };
 
-        function searchCharacters() {
-            var newQuery = inSearchInput.value.trim();
+        // Applies a search. live = true while typing (loose match), false for the Search button (exact ID).
+        function applySearch(newQuery, live) {
             if (newQuery != '' && searchQuery == '') {
                 list.beforeSearch = page;
             }
@@ -574,13 +608,27 @@
                 list.beforeSearch = 1;
             }
             searchQuery = newQuery;
-            getCharacters();
+            liveMode = live;
+            getCharacters(live);
         }
 
-        function checkSearchCleared() {
-            if (inSearchInput.value.trim() == '' && searchQuery != '') {
-                searchCharacters();
-            }
+        function cleanQuery() {
+            return inSearchInput.value.replace(/\s+/g, ' ').trim();
+        }
+
+        // Search button / Enter: filter the cards to the entered name or exact ID
+        function searchCharacters() {
+            var newQuery = cleanQuery();
+            inSearchInput.value = newQuery;
+            if (newQuery == '' && searchQuery == '') return;
+            applySearch(newQuery, false);
+        }
+
+        // Every keystroke: cards below filter live. Empty box restores the full list.
+        function onSearchInput() {
+            var newQuery = cleanQuery();
+            if (newQuery == searchQuery) return;
+            applySearch(newQuery, true);
         }
 
         function changeFilter() {
